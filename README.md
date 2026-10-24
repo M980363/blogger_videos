@@ -3,6 +3,8 @@
 Skills de DSH para **publicar vídeo en Blogger** con un perfil de codificación único y
 reproducible en Synology DS124, navegadores y Smart TVs.
 
+Repositorio: <https://github.com/M980363/blogger_videos>
+
 Cada skill es un bundle autocontenido (`SKILL.md` + `scripts/` + `references/`) que el agente
 carga bajo demanda. Los scripts son POSIX `sh`/`bash` y no dependen de nada fuera de `ffmpeg`,
 `ffprobe`, `curl` y utilidades estándar.
