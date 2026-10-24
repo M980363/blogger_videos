@@ -81,21 +81,23 @@ else
 fi
 
 # --- faststart: moov debe aparecer antes que mdat ---------------------------
+# Se escanea el archivo completo: en vídeos grandes el moov del final puede quedar
+# muy lejos del primer MiB (un MP4 de 60 MB sin faststart lo tiene en el byte 60M).
 moov=""
 mdat=""
-if head -c 8388608 "$FILE" 2>/dev/null | grep -abo -m1 moov >/dev/null 2>&1; then
-  moov=$(head -c 8388608 "$FILE" | grep -abo -m1 moov | head -n 1 | cut -d: -f1)
-  mdat=$(head -c 8388608 "$FILE" | grep -abo -m1 mdat | head -n 1 | cut -d: -f1)
+if grep -abo -m1 moov "$FILE" >/dev/null 2>&1; then
+  moov=$(grep -abo -m1 moov "$FILE" | head -n 1 | cut -d: -f1)
+  mdat=$(grep -abo -m1 mdat "$FILE" | head -n 1 | cut -d: -f1)
 fi
 
 if [ -n "$moov" ] && [ -n "$mdat" ]; then
   if [ "$moov" -lt "$mdat" ]; then
     row 1 faststart "moov@$moov < mdat@$mdat"
   else
-    row 0 faststart "moov@$moov > mdat@$mdat (reproduce tarde en web)"
+    row 0 faststart "moov@$moov > mdat@$mdat (sin faststart; la web espera a descargar todo)"
   fi
 else
-  printf '  [ -- ]  %-16s %s\n' faststart "no comprobable (falta grep GNU o cabeceras fuera de los primeros 8 MiB)"
+  printf '  [ -- ]  %-16s %s\n' faststart "no comprobable (grep no disponible)"
 fi
 
 # --- duración ---------------------------------------------------------------
